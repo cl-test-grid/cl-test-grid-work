@@ -132,9 +132,9 @@
                                                             "ecl-15.3.7-a014bd2c-linux-x64-lisp-to-c")
                                                           :test #'string=)
                                                   (member (libname r)
-                                                          '(:asdf-contrib :asdf-encodings :buffalo :checkl
-                                                            :cl-store :clack-errors :cxml-stp :hu.dwim.computed-class
-                                                            :iterate :lambda-reader :weblocks)))))
+                                                          '(:asdf-contrib :asdf-encodings :buffalo
+                                                            :cl-store :clack-errors :cxml-stp
+                                                            :lambda-reader :weblocks)))))
                      :rows '((libname string<))
                      :cols `((lib-world string<)
                              (lisp ,(tg-utils::ordering-comparator (list "ecl-15.3.7-827d3035-linux-x64-lisp-to-c"
