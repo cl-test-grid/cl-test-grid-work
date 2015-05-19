@@ -11,6 +11,7 @@
                 #:lisp
                 #:libname
                 #:lib-world
+                #:test-run-time
                 #:results-cell-printer))
 (in-package #:ecl-reports)
 
@@ -117,14 +118,15 @@
                      "ecl-15.3.7-a014bd2c-linux-i686-bytecode")
 
 (print-compiler-diff "ecl/ecl-diff-10-lisp-to-c.html"
-                     *all-results*
+                     (subset *all-results* (lambda (r) (not (= 3640867897 (test-run-time r)))))
                      "quicklisp 2015-05-05"
                      "ecl-15.3.7-827d3035-linux-x64-lisp-to-c"
                      "ecl-15.3.7-a014bd2c-linux-x64-lisp-to-c")
 
 (tg-rep::print-pivot "ecl/ecl-results-10-lisp-to-c.html"
                      (subset *all-results* (lambda (r)
-                                             (and (string= (lib-world r) "quicklisp 2015-05-05")
+                                             (and (not (= 3640867897 (test-run-time r)))
+                                                  (string= (lib-world r) "quicklisp 2015-05-05")
                                                   (member (lisp r)
                                                           '("ecl-15.3.7-827d3035-linux-x64-lisp-to-c"
                                                             "ecl-15.3.7-a014bd2c-linux-x64-lisp-to-c")
