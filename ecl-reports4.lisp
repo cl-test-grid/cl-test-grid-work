@@ -201,3 +201,16 @@
                      "quicklisp 2016-02-08"
                      "ecl-16.1.2-rc2-093ba0ab-linux-x64-lisp-to-c"
                      "ecl-16.0.0-b2661fd1-linux-x64-lisp-to-c")
+
+(print-compiler-diff "ecl/ecl-diff-16.1.2-rc3-lin-x64-lisp-to-c.html"
+                     (subset *all-results* (lambda (r) (not (= (test-run-time r) 3664443361))))
+                     "quicklisp 2016-02-08"
+                     "ecl-16.0.0-b2661fd1-linux-x64-lisp-to-c"
+                     "ecl-16.1.2-rc3-9e5a61f4-linux-x64-lisp-to-c")
+
+(print-compiler-diff "ecl/ecl-diff-16.1.2-rc3-lin-x64-bytecode.html"
+                     *all-results*
+                     "quicklisp 2016-02-08"
+                     "ecl-16.0.0-b2661fd1-linux-x64-bytecode"
+                     "ecl-16.1.2-rc3-9e5a61f4-linux-x64-bytecode")
+
