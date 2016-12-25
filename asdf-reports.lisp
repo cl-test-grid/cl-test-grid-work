@@ -269,6 +269,25 @@
                                "quicklisp 2016-12-08 + asdf.3.1.7.43"))
 
 
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2016-12-08"
+                                                       "quicklisp 2016-12-08 + asdf.3.1.7.43")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-53.html"
+                               (tg-rep::subset results-to-compare
+                                               (lambda (r)
+                                                 (not (and (string= "quicklisp 2016-12-08 + asdf.3.1.7.43"
+                                                                    (tg-rep::lib-world r))
+                                                           (tg-rep::failure-p r)
+                                                           (let ((err-text (tg-rep::fail-condition-text r)))
+                                                             (some (lambda (txt) (search txt err-text))
+                                                                   '("undefined function ASDF/INTERFACE::OPERATION-FORCED"
+                                                                     "OPERATION instances must only be created through MAKE-OPERATION."
+                                                                     "function ASDF/INTERFACE::OPERATION-FORCED is undefined."
+                                                                     "Undefined function ASDF/INTERFACE::OPERATION-FORCED"
+                                                                     "There exists no package with name \"CFFI-TOOLCHAIN\"")))))))
+                               "quicklisp 2016-12-08"
+                               "quicklisp 2016-12-08 + asdf.3.1.7.43"))
+
 
 (sptm:repli-exec *r* 'tg-data:update-run-descr '((:lib-world "quicklisp 2014-04-25 + asfd.3.1.0.120")
                                                  (:lib-world "quicklisp 2014-04-25 + asdf.3.1.0.120")))
