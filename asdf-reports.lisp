@@ -247,19 +247,27 @@
 
 (print-quicklisp-diff-report "asdf/asdf-diff-51.html"
                              *all-results*                     
-                             "quicklisp 2015-06-08"
+                             "quicklisp 2016-12-08"
                              "quicklisp 2016-12-08 + asdf.3.1.7.43")
 
 (let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
-                                                       "quicklisp 2015-06-08"
+                                                       "quicklisp 2016-12-08"
                                                        "quicklisp 2016-12-08 + asdf.3.1.7.43")))
   (print-quicklisp-diff-report "asdf/asdf-diff-52.html"
                                (tg-rep::subset results-to-compare
                                                (lambda (r)
-                                                 (not (search "OPERATION instances must only be created through MAKE-OPERATION."
-                                                              (tg-rep::fail-condition-text r)))))
-                               "quicklisp 2015-06-08"
+                                                 (not (and (string= "quicklisp 2016-12-08 + asdf.3.1.7.43"
+                                                                    (tg-rep::lib-world r))
+                                                           (tg-rep::failure-p r)
+                                                           (let ((err-text (tg-rep::fail-condition-text r)))
+                                                             (some (lambda (txt) (search txt err-text))
+                                                                   '("undefined function ASDF/INTERFACE::OPERATION-FORCED"
+                                                                     "OPERATION instances must only be created through MAKE-OPERATION."
+                                                                     "function ASDF/INTERFACE::OPERATION-FORCED is undefined."
+                                                                     "Undefined function ASDF/INTERFACE::OPERATION-FORCED")))))))
+                               "quicklisp 2016-12-08"
                                "quicklisp 2016-12-08 + asdf.3.1.7.43"))
+
 
 
 (sptm:repli-exec *r* 'tg-data:update-run-descr '((:lib-world "quicklisp 2014-04-25 + asfd.3.1.0.120")
@@ -282,73 +290,3 @@
                 (tg-utils::list< (list #'string< #'string< #'string<)
                                  l1 l2))))
 
-ccl-1.10-r16196-f96-linux-x86
-ccl-1.11-r16635-f96-linux-x86
-ccl-1.9-r15756-f96-linux-x86
-clisp-2.49-unix-x86
-cmu-snapshot-2016-12__21b_unicode_-linux-x86
-ecl-16.1.2-unknown-linux-x86-bytecode
-ecl-16.1.2-unknown-linux-x86-lisp-to-c
-sbcl-1.3.12-linux-x86
-
-("quicklisp 2013-03-12 + asdf.2.32.35" "ccl-1.8-f95-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-03-12 + asdf.2.32.35" "ccl-1.9-f96-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-03-12 + asdf.2.32.35" "clisp-2.49-unix-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-03-12 + asdf.2.32.35" "ecl-12.12.1-unknown-linux-x86-bytecode" "avodonosov@yandex.ru")
-("quicklisp 2013-03-12 + asdf.2.32.35" "ecl-12.12.1-unknown-linux-x86-lisp-to-c" "avodonosov@yandex.ru")
-("quicklisp 2013-03-12 + asdf.2.32.35" "sbcl-1.1.1-linux-x86" "avodonosov@yandex.ru")
-
-("quicklisp 2013-12-13 + asdf.2.32.35" "abcl-1.2.0-fasl42-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "abcl-1.2.1-fasl42-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "ccl-1.9-f96-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "clisp-2.49-unix-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "cmu-snapshot-2014-01__20e_unicode_-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "ecl-13.5.1-unknown-linux-i686-bytecode" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "ecl-13.5.1-unknown-linux-i686-lisp-to-c" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.2.32.35" "sbcl-1.1.11-linux-x86" "avodonosov@yandex.ru")
-
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "abcl-1.2.0-fasl42-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "abcl-1.2.1-fasl42-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "ccl-1.9-f96-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "clisp-2.49-unix-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "cmu-snapshot-2014-01__20e_unicode_-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "ecl-13.5.1-unknown-linux-i686-bytecode" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "ecl-13.5.1-unknown-linux-i686-lisp-to-c" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13 + asdf.3.1.0.63" "sbcl-1.1.11-linux-x86" "avodonosov@yandex.ru")
-
-("quicklisp 2013-12-13" "abcl-1.1.1-fasl39-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "abcl-1.2.0-fasl42-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "ccl-1.9-f96-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "clisp-2.49-unix-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "cmu-snapshot-2013-04__20d_unicode_-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "cmu-snapshot-2014-01__20e_unicode_-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "ecl-13.5.1-unknown-linux-i686-bytecode" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "ecl-13.5.1-unknown-linux-i686-lisp-to-c" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "sbcl-1.0.58-linux-x86" "avodonosov@yandex.ru")
-("quicklisp 2013-12-13" "sbcl-1.1.11-linux-x86" "avodonosov@yandex.ru")
-
-
-;;; delete unnecessary test runs
-#|
-(defparameter *b* (tg-gae-blobstore:make-blob-store :base-url "http://18.cl-test-grid.appspot.com/"))
-
-(defparameter *runs*
-  (remove-if-not (tg-data::test-run-matcher '(:lib-world "quicklisp 2014-02-11 + asdf.3.1.0.94.synt-patch"))
-                 (getf *db* :runs)))
-
-(length *runs*)
-
-(defparameter *blob-keys*
-  (mapcar #'tg-data::name
-          (mapcan #'tg-data::test-run-blobs *runs*)))
-
-(length *blob-keys*)
-(fourth *blob-keys*)
-
-(tg-gae-blobstore:delete-files *b* *blob-keys*)
-(sptm::repli-exec-save *r*
-                       'tg-data:remove-test-runs
-                       '(:lib-world "quicklisp 2014-02-11 + asdf.3.1.0.94.synt-patch"))
-
-
-|#
