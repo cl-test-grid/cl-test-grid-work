@@ -17,18 +17,28 @@
                 #:print-quicklisp-diff-report
                 #:print-quicklisp-diff-report2
                 #:failure-p
-                #:result-spec))
+                #:result-spec
+                #:print-new-failures))
 (in-package #:asdf-reports)
 
-(defparameter *r* (tg-storage:sync (tg-storage:get-replica "asdf")))
+(handler-bind ((serious-condition (lambda (c)
+                                    (declare (ignore c))
+                                    (invoke-restart 'sptm:use-partially-updated))))
+  (defparameter *r* (tg-storage:sync (tg-storage:get-replica "asdf"))))
+
 ;(defparameter *ra* (tg-storage:sync (tg-storage:get-replica "abcl")))
-(defparameter *rm* (tg-storage:sync (tg-storage:get-replica "main")))
+(handler-bind ((serious-condition (lambda (c)
+                                    (declare (ignore c))
+                                    (invoke-restart 'sptm:use-partially-updated))))
+    (defparameter *rm* (tg-storage:sync (tg-storage:get-replica "main"))))
 
 (defparameter *db* (tg-data:join-dbs (tg-storage:data *r*)
                                      (tg-storage:data *rm*)
                                      ; (tg-storage:data *ra*)
                                      ))
+
 (defparameter *all-results* (list-results *db*))
+
 
 (defparameter *ascii-warns*
   (tg-rep::quicklisp-diff-items *all-results*
@@ -289,19 +299,269 @@
                                "quicklisp 2016-12-08 + asdf.3.1.7.43"))
 
 
-(sptm:repli-exec *r* 'tg-data:update-run-descr '((:lib-world "quicklisp 2014-04-25 + asfd.3.1.0.120")
-                                                 (:lib-world "quicklisp 2014-04-25 + asdf.3.1.0.120")))
-(sptm:save-snapshot)
-(length (subset *all-results*
-                (lambda (r) (string= "quicklisp 2016-12-08 + asdf.3.1.7.43" (lib-world r)))))
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2016-12-08"
+                                                       "quicklisp 2016-12-08 + asdf.3.1.7.43 + slime.786c032 + cffi.ff0a22e + asdf-system-connections.9f08524")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-54.html"
+                               results-to-compare
+                               "quicklisp 2016-12-08"
+                               "quicklisp 2016-12-08 + asdf.3.1.7.43 + slime.786c032 + cffi.ff0a22e + asdf-system-connections.9f08524"))
+
+
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2016-12-08"
+                                                       "quicklisp 2016-12-08 + asdf.3.1.7.43 + slime.786c032 + cffi.ff0a22e + asdf-system-connections.9f08524")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-55.html"
+                               (tg-rep::subset results-to-compare
+                                               (lambda (r)
+                                                 (not (and (string= "quicklisp 2016-12-08 + asdf.3.1.7.43 + slime.786c032 + cffi.ff0a22e + asdf-system-connections.9f08524"
+                                                                    (tg-rep::lib-world r))
+                                                           (tg-rep::failure-p r)
+                                                           (let ((err-text (tg-rep::fail-condition-text r)))
+                                                             (some (lambda (txt) (search txt err-text))
+                                                                   '("OPERATION instances must only be created through MAKE-OPERATION.")))))))
+                               "quicklisp 2016-12-08"
+                               "quicklisp 2016-12-08 + asdf.3.1.7.43 + slime.786c032 + cffi.ff0a22e + asdf-system-connections.9f08524"))
+
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2016-12-08"
+                                                       "quicklisp 2016-12-08 + asdf.dee8b12 + slime.786c032 + cffi.ff0a22e.no-uffi-compat + asdf-system-connections.9f08524 + iolib.57c8079 + prove.127da52 + cl-protobufs.bb5c018 + uiop.dee8b12")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-56.html"
+                               (tg-rep::subset results-to-compare
+                                               (lambda (r)
+                                                 (not (and (string= "quicklisp 2016-12-08 + asdf.dee8b12 + slime.786c032 + cffi.ff0a22e.no-uffi-compat + asdf-system-connections.9f08524 + iolib.57c8079 + prove.127da52 + cl-protobufs.bb5c018 + uiop.dee8b12"
+                                                                    (tg-rep::lib-world r))
+                                                           (tg-rep::failure-p r)
+                                                           (let ((err-text (tg-rep::fail-condition-text r)))
+                                                             (some (lambda (txt) (search txt err-text))
+                                                                   '("OPERATION instances must only be created through MAKE-OPERATION.")))))))
+                               "quicklisp 2016-12-08"
+                               "quicklisp 2016-12-08 + asdf.dee8b12 + slime.786c032 + cffi.ff0a22e.no-uffi-compat + asdf-system-connections.9f08524 + iolib.57c8079 + prove.127da52 + cl-protobufs.bb5c018 + uiop.dee8b12"))
+
+
+(print-quicklisp-diff-report "asdf/asdf-diff-57.html"
+                             *all-results*
+                             "quicklisp 2017-02-27"
+                             "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692")
+
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2017-02-27"
+                                                       "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-58.html"
+                               results-to-compare
+                               "quicklisp 2017-02-27"
+                               "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692"))
+
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2017-02-27"
+                                                       "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-59.html"
+                               (tg-rep::subset results-to-compare
+                                               (lambda (r)
+                                                 (not (and (string= "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692"
+                                                                    (tg-rep::lib-world r))
+                                                           (tg-rep::failure-p r)
+                                                           (let ((err-text (tg-rep::fail-condition-text r)))
+                                                             (some (lambda (txt) (search txt err-text))
+                                                                   '("OPERATION instances must only be created through MAKE-OPERATION.")))))))
+                               "quicklisp 2017-02-27"
+                               "quicklisp 2017-02-27 + asdf.3.2.1-rc1.4d66692"))
+
+(print-quicklisp-diff-report "asdf/asdf-diff-60.html"
+                             *all-results*
+                             "quicklisp 2017-02-27"
+                             "quicklisp 2017-02-27 + asdf.3.3.0-rc1.a6bd7c6 + iolib.57c8079 + cl-protobufs.57c8079")
+
+(print-quicklisp-diff-report "asdf/asdf-diff-61.html"
+                             *all-results*
+                             "quicklisp 2017-02-27"
+                             "quicklisp 2017-02-27 + asdf.3.3.0-rc1.a6bd7c6 + iolib.pr42.66ea927 + cl-protobufs.57c8079")
+
+(let ((results-to-compare (tg-rep::tests-failed-on-new *all-results*
+                                                       "quicklisp 2017-02-27"
+                                                       "quicklisp 2017-02-27 + asdf.3.3.0-rc1.a6bd7c6 + iolib.pr42.66ea927 + cl-protobufs.57c8079")))
+  (print-quicklisp-diff-report "asdf/asdf-diff-62.html"
+                               results-to-compare
+                               "quicklisp 2017-02-27"
+                               "quicklisp 2017-02-27 + asdf.3.3.0-rc1.a6bd7c6 + iolib.pr42.66ea927 + cl-protobufs.57c8079"))
+
+(defun print-new-failures (report-file all-results old-lib-world new-lib-world)
+  (let ((results-to-compare (tg-rep::tests-failed-on-new all-results
+                                                         old-lib-world
+                                                         new-lib-world)))
+    (print-quicklisp-diff-report report-file
+                                 results-to-compare
+                                 old-lib-world
+                                 new-lib-world)))
+
+
+(print-new-failures "asdf/asdf-diff-63.html"
+                    *all-results*
+                    "quicklisp 2017-05-16"
+                    "quicklisp 2017-05-16 + asdf.3.1.7")
+
+(print-new-failures "asdf/asdf-diff-64.html"
+                    *all-results*
+                    "quicklisp 2017-05-16"
+                    "quicklisp 2017-05-16 + asdf.3.2.1")
+
+(print-new-failures "asdf/asdf-diff-65.html"
+                    *all-results*
+                    "quicklisp 2017-05-16"
+                    "quicklisp 2017-05-16 + asdf.3.3.0-rc2.e0d5157")
+  
+(print-new-failures "asdf/asdf-diff-66.html"
+                    *all-results*
+                    "quicklisp 2017-06-30"
+                    "quicklisp 2017-06-30 + asdf.3.3.0-rc3.9fc397e")
+  
+(print-new-failures "asdf/asdf-diff-67.html"
+                    *all-results*
+                    "quicklisp 2017-08-30"
+                    "quicklisp 2017-08-30 + asdf.3.2.1-14-g5eca374")
+
+(print-new-failures "asdf/asdf-diff-68.html"
+                    *all-results*
+                    "quicklisp 2017-08-30"
+                    "quicklisp 2017-08-30 + asdf.3.2.1-373cafd")
+
+(print-new-failures "asdf/asdf-diff-69.html"
+                    *all-results*
+                    "quicklisp 2017-08-30"
+                    "quicklisp 2017-08-30 + asdf.3.2.1-373cafd"
+                    :report-function 'print-quicklisp-diff-report2)
+
+(print-new-failures "asdf/asdf-diff-70.html"
+                    *all-results*
+                    "quicklisp 2017-08-30"
+                    "quicklisp 2017-08-30 + asdf-3.3.1-rc-ffb922b")
+
+(print-new-failures "asdf/asdf-diff-71.html"
+                    *all-results*
+                    "quicklisp 2017-08-30"
+                    "quicklisp 2017-08-30 + asdf-3.3.1-rc3-1a3d333")
+
+(print-new-failures "asdf/asdf-diff-72.html"
+                    *all-results*
+                    "quicklisp 2018-01-31"
+                    "quicklisp 2018-01-31 + asdf-3.3.1.3")
+
+(print-new-failures "asdf/asdf-diff-73.html"
+                    *all-results*
+                    "quicklisp 2018-02-28"
+                    "quicklisp 2018-02-28 + asdf-3.3.1.7")
+
+(print-new-failures "asdf/asdf-diff-74.html"
+                    (subset *all-results*
+                            (lambda (r)
+                              (not (string= (lisp r)
+                                            "acl-10.0-linux-x86"))))
+                    "quicklisp 2018-03-28"
+                    "quicklisp 2018-03-28 + asdf.syntax-ctrl.8dc0778")
+
+;; Some bizzare crashes had happened when testing non-SMP Allegro -
+;; after quicklisp compiled fasl file for adsf.lisp first time on one invocation,
+;; next invocatinos of the same command chash allegro with the following
+;; message:
+;; 
+;;   Allegro CL(pid 6858): System Error (gsgc) Unknown object type at (0xbf85406a)
+;;   The internal data structures in the running Lisp image have been
+;;   corrupted and execution cannot continue.  Check all foreign functions
+;;   and any Lisp code that was compiled with high speed and/or low safety,
+;;   as these are two common sources of this failure.  If you cannot find
+;;   anything incorrect in your code you should contact technical support
+;;   for Allegro Common Lisp, and we will try to help determine whether
+;;   this is a coding error or an internal bug.
+;;   A core file can be produced at this time.  Core files may or may not
+;;   be useful in diagnosing an error of this type and are often not useful.
+;;   See doc/introduction.htm#core-dumps-2 for more details.
+;;
+;; However, since the goal of https://github.com/cl-test-grid/cl-test-grid/issues/41
+;; was to compare ASDF 3.3.5.7 with ASDF branch asdf-uiop-docstring,
+;; and the crashes happen for both of them, let's ignore. The SMP versions
+;; do not have this issue.
+
+(defparameter *results-without-acl-nonsmp*
+  (subset *all-results*
+          (lambda (r) (not (member (lisp r)
+                                   '("acl-10.1-linux-x86" "acl-10.1m-linux-x86")
+                                   :test #'string=)))))
+
+(print-new-failures "asdf/asdf-diff-75.html"
+                    ;; *all-results*
+                    *results-without-acl-nonsmp*
+                    "quicklisp 2021-12-30"
+                    "quicklisp 2021-12-30 + asdf.3.3.5.7")
+
+(print-new-failures "asdf/asdf-diff-76.html"
+                    ;; *all-results*
+                    *results-without-acl-nonsmp*
+                    "quicklisp 2021-12-30 + asdf.3.3.5.7"
+                    "quicklisp 2021-12-30 + asdf-uiop-docstring.6ba0224")
+
+(print-new-failures "asdf/asdf-diff-77.html" 
+                    ;; *all-results*
+                    *results-without-acl-nonsmp*
+                    "quicklisp 2021-12-30"
+                    "quicklisp 2021-12-30 + asdf-uiop-docstring.6ba0224")
+
+
 
 (format t "~%~{~A~%~}"
         (sort (alexandria:flatten
                (tg-rep::distinct (subset *all-results*
-                                         (lambda (r) (string= "quicklisp 2016-12-08 + asdf.3.1.7.43"
+                                         (lambda (r) (string= "quicklisp 2021-12-30 + asdf-uiop-docstring.6ba0224"
                                                               (lib-world r))))
                                  '(lisp)))
               #'string<))
+
+(ql:quickload :cl-store)
+(time
+ (cl-store:store *db* "/home/anton/prj/cl-test-grid/work/db-cl-store.data"))
+(time
+ (cl-store:store (tg-storage:data *rm*) "/home/anton/prj/cl-test-grid/work/db-cl-store.data"))
+(time (tg-storage:sync))
+
+(defparameter *rt* (tg-storage:make-replica "vector-test" #P"/home/anton/prj/cl-test-grid/work/db-vector-test.lisp" ))
+(and (setf (sptm:vdata *rt*)  (sptm:vdata *rm*))
+     nil)
+
+(tg-storage:sync *rt*)
+(sptm:save-local-snapshot *rt*)
+(time
+ (sptm::read-local-snapshot *rt*))
+
+(time
+ (sptm::read-local-snapshot *rm*))
+
+
+
+;; todo: delete these as I had iolib and something else in ~/quicklisp-asdf3/local-storage/
+
+  ("quicklisp 2017-08-30 + asdf.3.2.1-14-g5eca374"
+   "cmu-snapshot-2016-12__21b_unicode_-linux-x86")
+  ("quicklisp 2017-08-30 + asdf.3.2.1-14-g5eca374"
+   "ccl-1.11-r16635-f96-linux-x86")
+  ("quicklisp 2017-08-30 + asdf.3.2.1-14-g5eca374"
+   "sbcl-1.3.21-linux-x86")
+  
+
+;; "quicklisp 2017-02-27 + asdf.3.3.0-rc1.a6bd7c6 + iolib.pr42.66ea927 + cl-protobufs.57c8079"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(and
+ (sptm:repli-exec *r* 'tg-data:update-run-descr '((:lib-world "quicklisp 2018-02-28 + asdf.syntax-ctrl.8dc0778")
+                                                  (:lib-world "quicklisp 2018-03-28 + asdf.syntax-ctrl.8dc0778")))
+ nil)
+
+
+(sptm:save-local-snapshot *r*)
+
+(length (subset *all-results*
+                (lambda (r) (string= "quicklisp 2016-12-08 + asdf.3.1.7.43" (lib-world r)))))
+
 
 (format t "~%~{~S~%~}"
         (sort (tg-rep::distinct *all-results* '(lib-world lisp tg-rep::contact-email))
