@@ -223,6 +223,20 @@
                      "abcl-1.5.0-fasl43-linux-x86"
                      )
 
+(print-compiler-diff "abcl/abcl-diff30.html"
+                     *all-results*
+                     "quicklisp 2019-10-08"
+                     "abcl-1.5.0-fasl43-linux-x86"
+                     "abcl-1.6.0-fasl43-linux-x86"
+                     )
+
+(print-compiler-diff "abcl/abcl-diff31.html"
+                     *all-results*
+                     "quicklisp 2019-10-08"
+                     "abcl-1.4.0-fasl42-linux-x86"
+                     "abcl-1.6.0-fasl43-linux-x86"
+                     )
+
 ;; On ABCL 1.5.0 a log of tests :CRASH which :FAILed on ABCL 1.4.0
 ;; https://mailman.common-lisp.net/pipermail/armedbear-devel/2017-July/003867.html
 ;;
